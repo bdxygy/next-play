@@ -3,47 +3,58 @@ import { useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
+const scrollUp = async () => {
+  return await new Promise((resolve, reject) => {
+    window.scroll({
+      behavior: "instant",
+      top: 0
+    })
+
+    resolve(true)
+  });
+}
+
 export default function Home() {
   useEffect(() => {
-    window.scroll({ top: 0 })
-    const paths: NodeListOf<SVGPathElement> = document.querySelectorAll('path.path__main');
+    scrollUp().then(() => {
+      const paths: NodeListOf<SVGPathElement> = document.querySelectorAll('path.path__main');
 
-    paths.forEach((path, i) => {
-      const pathLength = path!.getTotalLength();
+      paths.forEach((path, i) => {
+        const pathLength = path!.getTotalLength();
 
-      path.style.strokeDasharray = `${pathLength} ${pathLength}`;
-      path.style.strokeDashoffset = `${pathLength}`;
+        path.style.strokeDasharray = `${pathLength} ${pathLength}`;
+        path.style.strokeDashoffset = `${pathLength}`;
 
-      window.addEventListener('scroll', function () {
+        window.addEventListener('scroll', function () {
 
-        const elemRect = path.getBoundingClientRect();
+          const elemRect = path.getBoundingClientRect();
 
-        const viewportHeight = (window.innerHeight || document.documentElement.clientHeight) - 200;
+          const viewportHeight = (window.innerHeight || document.documentElement.clientHeight) - 200;
 
-        const visibleHeight = Math.min(elemRect.bottom, viewportHeight) - Math.max(elemRect.top, 0);
+          const visibleHeight = Math.min(elemRect.bottom, viewportHeight) - Math.max(elemRect.top, 0);
 
-        const percentageVisible = (visibleHeight / elemRect.height) * 100;
+          const percentageVisible = (visibleHeight / elemRect.height) * 100;
 
-        if ((path.parentNode as SVGElement).classList.contains('scaled') && !path.classList.contains("finished")) {
-          console.log(paths[i].style.strokeDashoffset, i, parseInt(path.style.strokeDashoffset) !== 1671.1)
-          path.style.strokeDashoffset = parseFloat(path.style.strokeDashoffset) !== 1671.1 ? `${pathLength - (-percentageVisible * pathLength / 100)}` : `${0}`;
+          if ((path.parentNode as SVGElement).classList.contains('scaled') && !path.classList.contains("finished")) {
+            console.log(paths[i].style.strokeDashoffset, i, parseInt(path.style.strokeDashoffset) !== 1671.1)
+            path.style.strokeDashoffset = parseFloat(path.style.strokeDashoffset) !== 1671.1 ? `${pathLength - (-percentageVisible * pathLength / 100)}` : `${0}`;
 
-        } else {
-          path.style.strokeDashoffset = parseInt(path.style.strokeDashoffset) !== 0 ? `${pathLength - (percentageVisible * pathLength / 100)}` : `${0}`;
+          } else {
+            path.style.strokeDashoffset = parseInt(path.style.strokeDashoffset) !== 0 ? `${pathLength - (percentageVisible * pathLength / 100)}` : `${0}`;
 
-        }
+          }
 
-        if (parseInt(path.style.strokeDashoffset) === 0) {
-          path.classList.add('finished')
-        }
+          if (parseInt(path.style.strokeDashoffset) === 0) {
+            path.classList.add('finished')
+          }
+
+        })
 
       })
 
     })
-
     return () => {
       window.removeEventListener('scroll', function () {
-
       });
     }
   }, [])
