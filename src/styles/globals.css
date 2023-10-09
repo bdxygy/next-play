@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .first__center {
+    @apply h-80 -translate-x-[8.5rem] relative;
+  }
+  .left__to__right {
+    @apply h-80 translate-x-2.5 relative;
+  }
+
+  .right__to__left {
+    @apply w-[584px] translate-x-6 relative;
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
